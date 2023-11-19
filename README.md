@@ -6,7 +6,7 @@
 
 **Date**: 2023.10.02
 
-**Description**: patch identification using both commit messages and normalized diff code.By different ratios of different security patch datasets, test the effectiveness of the SbSpDB security patch datasets for machine learning tasks.
+**Description**: patch identification using both commit messages and normalized diff code. By different ratios of different security patch datasets, test the effectiveness of the SpDB security patch datasets for machine learning tasks.
 
 **File Structure**:
 
@@ -46,7 +46,8 @@
 
 ```shell script
 pip install clang == 6.0.0.2
-pip install torch == 1.2.0 torchvision == 0.4.0
+pip install torch == 1.2.0 
+torchvision == 0.4.0
 pip install nltk  == 3.3
 or
 pip install -r requirements
@@ -96,24 +97,34 @@ pip install -r requirements
 
        1. 读取安全补丁数据集和非安全补丁数据集
 
-    2. 处理diff文件 `这些步骤用于准备训练RNN模型所需的数据和标签，并将它们转换为适当的格式。`
+       2. 处理diff文件 `这些步骤用于准备训练RNN模型所需的数据和标签，并将它们转换为适当的格式。`
 
-       - 获取diff标记词汇表：使用`GetDiffVocab()`函数获取diff标记词汇表，该函数接受diff属性列表作为输入，并返回diff标记词汇表和diff标记的数量。
+          - 获取diff标记词汇表：使用`GetDiffVocab()`函数获取diff标记词汇表，该函数接受diff属性列表作为输入，并返回diff标记词汇表和diff标记的数量。
 
           - 获取diff标记字典：使用`GetDiffDict()`函数获取diff标记字典，该函数接受diff标记词汇表作为输入，并返回diff标记字典。
             练的嵌入层权重：使用`GetDiffEmbed()`函数获取预训练的嵌入层权重，该函数接受diff标记字典和嵌入维度作为输入，并返回预训练的嵌入层权重。 
-          - 将diff代码分为版本之前和版本之后的代码：使用`DivideBeforeAfter()`函数将diff代码分为版本之前和版本之后的代码，并返回分割后的diff代码列表和最大长度。
-          - 获取diff文件的版本之前和版本之后的代码长度：如果版本之前和版本之后的代码长度都大于最大长度，则将最大长度设置为`_TwinMaxLen_`，否则将最大长度设置为版本之前和版本之后的代码长度中的最大值。
-          - 获取特征数据和标签的映射：使用`GetTwinMapping()`函数获取特征数据和标签的映射，该函数接受分割后的diff代码列表、最大长度和差异标记字典作为输入，并返回特征数据和标签的映射。
 
-      3.  处理commit message
-         - 获取commit message：使用`GetCommitMsgs()`函数获取commit message，该函数接受数据作为输入，并返回commit message列表。
-         - 获取commit message的token词汇表：使用`GetMsgVocab()`函数获取commit message标记词汇表和最大token长度，该函数接受commit message列表作为输入，并返回commit message token词汇表和最大token长度。
-         - 获取commit message token字典：使用`GetMsgDict()`函数获取commit message token字典，该函数接受commit message token词汇表作为输入，并返回commit message token字典。
-         - 获取预训练的嵌入层权重：使用`GetMsgEmbed()`函数获取预训练的嵌入层权重，该函数commit message token字典和嵌入维度作为输入，并返回预训练的嵌入层权重。
-         - 获取特征数据和标签的映射：使用`GetMsgMapping()`函数获取特征数据和标签的映射，该函数接受commit message列表、最大标记长度和commit message token作为输入，并返回特征数据和标签的映射。
-         - 将diff数据与commit message数据组合：使用`CombineTwinMsgs()`函数将diff数据与commit message数据组合，并返回组合后的数据和标签。
-         - 将数据分为训练集和测试集：使用`SplitData()`函数将数据和标签分为训练集和测试集，并返回训练集数据、训练集标签、测试集数据和测试集标签。
+          - 将diff代码分为版本之前和版本之后的代码：使用`DivideBeforeAfter()`函数将diff代码分为版本之前和版本之后的代码，并返回分割后的diff代码列表和最大长度。
+
+          - 获取diff文件的版本之前和版本之后的代码长度：如果版本之前和版本之后的代码长度都大于最大长度，则将最大长度设置为`_TwinMaxLen_`，否则将最大长度设置为版本之前和版本之后的代码长度中的最大值。
+
+          - 获取特征数据和标签的映射：使用`GetTwinMapping()`函数获取特征数据和标签的映射，该函数接受分割后的diff代码列表、最大长度和差异标记字典作为输入，并返回特征数据和标签的映射。
+          
+      3. 处理commit message
+
+          - 获取commit message：使用`GetCommitMsgs()`函数获取commit message，该函数接受数据作为输入，并返回commit message列表。
+          - 获取commit message的token词汇表：使用`GetMsgVocab()`函数获取commit message标记词汇表和最大token长度，该函数接受commit message列表作为输入，并返回commit message token词汇表和最大token长度。
+
+          - 获取commit message token字典：使用`GetMsgDict()`函数获取commit message token字典，该函数接受commit message token词汇表作为输入，并返回commit message token字典。
+
+          - 获取预训练的嵌入层权重：使用`GetMsgEmbed()`函数获取预训练的嵌入层权重，该函数commit message token字典和嵌入维度作为输入，并返回预训练的嵌入层权重。
+
+          - 获取特征数据和标签的映射：使用`GetMsgMapping()`函数获取特征数据和标签的映射，该函数接受commit message列表、最大标记长度和commit message token作为输入，并返回特征数据和标签的映射。
+
+          - 将diff数据与commit message数据组合：使用`CombineTwinMsgs()`函数将diff数据与commit message数据组合，并返回组合后的数据和标签。
+
+          - 将数据分为训练集和测试集：使用`SplitData()`函数将数据和标签分为训练集和测试集，并返回训练集数据、训练集标签、测试集数据和测试集标签。
+
 
   - run example:
         `python Step4_patchrnn_train.py`
